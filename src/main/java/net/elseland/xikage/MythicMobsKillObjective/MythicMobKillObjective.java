@@ -49,18 +49,20 @@ public class MythicMobKillObjective extends CustomObjective implements Listener 
                 killer = (Player)event.getKiller();
                 Quester quester = this.q.getQuester(killer.getUniqueId());
                 if(!quester.currentQuests.isEmpty()) {
-                    Iterator var5 = quester.currentQuests.keySet().iterator();
+                    Iterator questIterator = quester.currentQuests.keySet().iterator();
 
-                    while(var5.hasNext()) {
-                        Quest quest = (Quest)var5.next();
+                    while(questIterator.hasNext()) {
+                        Quest quest = (Quest)questIterator.next();
                         Map map = getDatamap(killer, this, quest);
+                        if (map == null) continue;
+
                         String string = (String)map.get("Killable Types");
                         String[] split = string.split(",");
                         String[] var12 = split;
                         int var11 = split.length;
 
-                        for(int var10 = 0; var10 < var11; ++var10) {
-                            String s = var12[var10];
+                        for(int i = 0; i < var11; ++i) {
+                            String s = var12[i];
                             if(event.getMobInstance().getType().MobName.matches(s)) {
                                 incrementObjective(killer, this, 1, quest);
                                 this.registeredMobs.add(event.getLivingEntity().getUniqueId());
