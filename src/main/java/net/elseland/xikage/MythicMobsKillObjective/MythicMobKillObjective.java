@@ -4,12 +4,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
+
 import me.blackvein.quests.CustomObjective;
 import me.blackvein.quests.Quest;
 import me.blackvein.quests.Quester;
 import me.blackvein.quests.Quests;
-import net.elseland.xikage.MythicMobs.MythicMobs;
 import net.elseland.xikage.MythicMobs.API.Bukkit.Events.MythicMobDeathEvent;
+import net.elseland.xikage.MythicMobs.MythicMobs;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -39,7 +40,7 @@ public class MythicMobKillObjective extends CustomObjective implements Listener 
     )
     public void onMythicMobDeath(MythicMobDeathEvent event) {
         MythicMobs.debug(2, "MythicMobs-Quests event fired!");
-        if(this.registeredMobs.contains(event.getLivingEntity().getUniqueId())) {
+        if(this.registeredMobs.contains(event.getEntity().getUniqueId())) {
             MythicMobs.debug(2, "MythicMobs-Quests event is a duplicate! Ignoring.");
         } else {
             Player killer = null;
@@ -63,9 +64,10 @@ public class MythicMobKillObjective extends CustomObjective implements Listener 
 
                         for(int i = 0; i < var11; ++i) {
                             String s = var12[i];
-                            if(event.getMobInstance().getType().MobName.matches(s)) {
+
+                            if(event.getMobType().getInternalName().matches(s)) {
                                 incrementObjective(killer, this, 1, quest);
-                                this.registeredMobs.add(event.getLivingEntity().getUniqueId());
+                                this.registeredMobs.add(event.getEntity().getUniqueId());
                                 class Clean implements Runnable {
                                     UUID u;
 
@@ -78,7 +80,7 @@ public class MythicMobKillObjective extends CustomObjective implements Listener 
                                     }
                                 }
 
-                                Bukkit.getScheduler().scheduleSyncDelayedTask(MythicMobs.plugin, new Clean(event.getLivingEntity().getUniqueId()), 40L);
+                                Bukkit.getScheduler().scheduleSyncDelayedTask(MythicMobs.plugin, new Clean(event.getEntity().getUniqueId()), 40L);
                                 MythicMobs.debug(2, "MythicMobs-Quests kill objective incremented.");
                             }
                         }
